@@ -71,6 +71,8 @@ def notify(property_identifiers):
 
 
 log("running")
+requests.get(secrets["healthchecks_io_uri"] + "/start")
+
 seen_properties = get_seen_properties()
 log(f'Seen properties: {len(seen_properties)}')
 online_properties = fetch_properties()
@@ -85,4 +87,4 @@ else:
 
 update_seen_properties(new_properties)
 
-requests.get("https://hc-ping.com/HqZbWLJsQGzCH4JWZbyDSw/rightmove-notifier")
+requests.get(secrets["healthchecks_io_uri"])
