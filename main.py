@@ -19,17 +19,20 @@ def log(msg):
 
 
 def get_seen_properties():
-    seen_path = os.path.join(BASE_DIR, "seen_ids.txt")
-    ids = None
+    seen_path = os.path.join(BASE_DIR, "seen_identifiers.txt")
+
+    if not os.path.exists(seen_path):
+        open(seen_path, 'w').close()
+
     with open(seen_path, 'r') as f:
-        ids = [i.strip("\n") for i in f.readlines()]
-    return set(ids)
+        identifiers = [i.strip("\n") for i in f.readlines()]
+    return set(identifiers)
 
 
-def update_seen_properties(new_ids):
-    seen_path = os.path.join(BASE_DIR, "seen_ids.txt")
+def update_seen_properties(new_identifiers):
+    seen_path = os.path.join(BASE_DIR, "seen_identifiers.txt")
     with open(seen_path, 'a+') as f:
-        for id_ in new_ids:
+        for id_ in new_identifiers:
             f.write(id_.strip() + "\n")
 
 
@@ -45,15 +48,22 @@ def fetch_properties():
     assert property_cards[0].find(class_="PropertyCard_featuredBannerTopOfCard__cYuPM")
     del property_cards[0]
 
-    ids = [i.find()['id'].strip("prop") for i in property_cards]
-    return set(ids)
+    identifiers = set()
+    for i in property_cards:
+        rightmove_id = i.find()['id'].strip("prop")
+        price = i.find(class_="PropertyPrice_price__VL65t")
+        identifier = rightmove_id + "|" + price.text
+        identifiers.add(identifier)
+    return set(identifiers)
 
 
-def notify(property_ids):
+def notify(property_identifiers):
     title = "New properties on your search!"
     msg = "New properties on your search:\n"
-    for pid in property_ids:
-        msg += " - www.rightmove.co.uk/properties/" + pid + "\n"
+    for pid in property_identifiers:
+        rightmove_id, price = pid.split("|")
+        msg += f' - www.rightmove.co.uk/properties/{rightmove_id} ({price})\n'
+        log(msg.replace("\n", "|"))
     url = 'https://api.pushover.net/1/messages.json'
     post_data = {'user': secrets["user_token"], 'token': secrets["api_token"], 'title': title, 'message': msg}
     response = requests.post(url, data=post_data)

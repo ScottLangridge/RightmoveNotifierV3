@@ -164,4 +164,4 @@ cython_debug/
 # Secrets
 /secrets.py
 /log.txt
-/seen_ids.txt
+/seen_identifiers.txt
