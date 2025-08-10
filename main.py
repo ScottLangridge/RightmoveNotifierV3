@@ -1,27 +1,34 @@
-import requests
-from bs4 import BeautifulSoup
+import os
 from datetime import datetime
 
+import requests
+from bs4 import BeautifulSoup
+
 from secrets import secrets
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def log(msg):
     time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     out = f'{time} - {msg}\n'
-    with open("log.txt", 'a+') as f:
+    log_path = os.path.join(BASE_DIR, "log.txt")
+    with open(log_path, 'a+') as f:
         f.write(out)
         print(out.strip("\n"))
 
 
 def get_seen_properties():
+    seen_path = os.path.join(BASE_DIR, "seen_ids.txt")
     ids = None
-    with open("seen_ids.txt", 'r') as f:
+    with open(seen_path, 'r') as f:
         ids = [i.strip("\n") for i in f.readlines()]
     return set(ids)
 
 
 def update_seen_properties(new_ids):
-    with open("seen_ids.txt", 'a+') as f:
+    seen_path = os.path.join(BASE_DIR, "seen_ids.txt")
+    with open(seen_path, 'a+') as f:
         for id_ in new_ids:
             f.write(id_.strip() + "\n")
 
