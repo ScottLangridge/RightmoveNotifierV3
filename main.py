@@ -36,8 +36,16 @@ def update_seen_properties(new_ids):
 def fetch_properties():
     content = requests.get(secrets["url"]).content
     soup = BeautifulSoup(content, "html.parser")
-    ids = [i.find()['id'].strip("prop") for i in
-           soup.find_all(class_=["PropertyCard_propertyCardContainerWrapper__mcK1Z", "propertyCard-details"])]
+    property_cards = soup.find_all(class_=["PropertyCard_propertyCardContainerWrapper__mcK1Z", "propertyCard-details"])
+
+    # The first property card is a "featured property" chosen randomly from the backlog. Since we are only interested in
+    # new properties, this can be removed.
+    #
+    # This assert ensures that we don't miss properties if the design ever changes and they stop featuring properties
+    assert property_cards[0].findChild(class_="PropertyCard_featuredBannerTopOfCard__cYuPM")
+    del property_cards[0]
+
+    ids = [i.find()['id'].strip("prop") for i in property_cards]
     return set(ids)
 
 
