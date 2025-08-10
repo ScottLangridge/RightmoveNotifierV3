@@ -59,3 +59,5 @@ else:
     log("No notify")
 
 update_seen_properties(new_properties)
+
+requests.get("https://hc-ping.com/HqZbWLJsQGzCH4JWZbyDSw/rightmove-notifier")
