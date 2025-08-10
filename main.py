@@ -42,7 +42,7 @@ def fetch_properties():
     # new properties, this can be removed.
     #
     # This assert ensures that we don't miss properties if the design ever changes and they stop featuring properties
-    assert property_cards[0].findChild(class_="PropertyCard_featuredBannerTopOfCard__cYuPM")
+    assert property_cards[0].find(class_="PropertyCard_featuredBannerTopOfCard__cYuPM")
     del property_cards[0]
 
     ids = [i.find()['id'].strip("prop") for i in property_cards]
